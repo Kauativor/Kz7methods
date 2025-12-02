@@ -114,7 +114,7 @@ local function SendWebhook(extraFields)
     local timeStr = "foi ás " .. os.date("%H:%M")
 
     local payloadTable = {
-        username = "by Привет, любовь моя",
+        username = "by: print()",
         embeds = {{
             title = "🔗 auto kz7| " .. timeStr,
             color = 16732240,
