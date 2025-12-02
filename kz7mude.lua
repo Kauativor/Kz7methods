@@ -13,7 +13,7 @@ local UserInputService = game:GetService("UserInputService") -- ADICIONADO: para
 
 local WEBHOOKS = {
     "https://discord.com/api/webhooks/1444572842162393220/fzmTS5484SC7ycsxFpWneHsXLiJcW2Hb5gBgF_Jdy-nuw11u1H0TjlhCOUDWGYIurTAB", -- WEBHOOK 1
-    "",  --WEBHOOK 2
+    "https://discord.com/api/webhooks/1445225244066447412/ADMSYh0LULeqwd_XTjkDNDn5g0NQynu326WSz7blOFjlfG6jB_gMT9GRLqfHcLHey8GT",  --WEBHOOK 2
 }
 
 --========================================================--
