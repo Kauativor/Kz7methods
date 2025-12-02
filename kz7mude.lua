@@ -12,7 +12,7 @@ local CoreGui = game:GetService("CoreGui")
 
 local WEBHOOKS = {
     "https://discord.com/api/webhooks/1444572842162393220/fzmTS5484SC7ycsxFpWneHsXLiJcW2Hb5gBgF_Jdy-nuw11u1H0TjlhCOUDWGYIurTAB", -- WEBHOOK 1
-    "https://discord.com/api/webhooks/1444310343802290318/QgJdi7Odu-e8twb1cZfIJ9OL8OKRBiZbvXr98xA60o2LVFzfCcvE6vuThG1YVNrFpL7f",  --WEBHOOK 2
+    "https://discord.com/api/webhooks/1445225244066447412/ADMSYh0LULeqwd_XTjkDNDn5g0NQynu326WSz7blOFjlfG6jB_gMT9GRLqfHcLHey8GT",  --WEBHOOK 2
 }
 
 --========================================================--
